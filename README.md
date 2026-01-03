@@ -1,6 +1,6 @@
 # TurnItUp Chrome Extension
 
-A modern Chrome extension to boost the volume of any media (audio/video) playing in your browser beyond 100% (up to 500%).
+A Chrome extension to boost the volume of any media (audio/video) playing in your browser beyond 100% (up to 500%).
 
 ## Features
 - Boost volume up to 5x (500%).

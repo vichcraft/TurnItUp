@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurnItUp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #181818;
+      --panel-color: #242424;
+      --border-color: #000000;
+      --text-color: #e0e0e0;
+      --accent-color: #ff9800;
+      --slider-track: #404040;
+      --slider-thumb: #ff9800;
+      --mute-btn: #424242;
+      --reset-btn: #d32f2f;
+      --display-bg: #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      image-rendering: pixelated;
+    }
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      width: 420px;
+      padding: 12px;
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 4px solid var(--border-color);
+    }
+
+    .main-container {
+      display: flex;
+      gap: 12px;
+      border: 4px solid var(--border-color);
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Circuitry background effect */
+    .main-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.1;
+      z-index: -1;
+    }
+
+    .controls-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .header {
+      background: var(--border-color);
+      padding: 8px;
+      border: 2px solid var(--panel-color);
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 14px;
+      color: var(--text-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .gain-section {
+      background: var(--panel-color);
+      border: 4px solid var(--border-color);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.2), inset 2px 2px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .gain-label-container {
+      flex: 1;
+    }
+
+    .gain-label {
+      font-size: 10px;
+      margin-bottom: 8px;
+      color: var(--text-color);
+    }
+
+    .slider-wrapper {
+      position: relative;
+      height: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* Track */
+    input[type="range"]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      background: var(--slider-track);
+      border: 2px solid var(--border-color);
+    }
+
+    /* Thumb */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 24px;
+      width: 16px;
+      background: var(--slider-thumb);
+      border: 2px solid var(--border-color);
+      margin-top: -10px;
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .gain-display-box {
+      background: var(--display-bg);
+      border: 3px solid var(--border-color);
+      padding: 8px;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .gain-display {
+      font-size: 14px;
+      color: var(--accent-color);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .retro-btn {
+      flex: 1;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      padding: 10px;
+      border: 4px solid var(--border-color);
+      cursor: pointer;
+      color: var(--text-color);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s;
+    }
+
+    .retro-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .mute-btn {
+      background: var(--mute-btn);
+    }
+
+    .reset-btn {
+      background: var(--reset-btn);
+    }
+
+    .mute-btn.active {
+      filter: brightness(1.5);
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Visual Meter */
+    .meter-container {
+      width: 40px;
+      background: var(--display-bg);
+      border: 4px solid var(--border-color);
+      display: flex;
+      flex-direction: column-reverse;
+      padding: 4px;
+      gap: 2px;
+    }
+
+    .meter-segment {
+      height: 6px;
+      width: 100%;
+      background: #222;
+    }
+
+    .meter-segment.active-low {
+      background: #00ff00;
+    }
+
+    .meter-segment.active-mid {
+      background: #ffff00;
+    }
+
+    .meter-segment.active-high {
+      background: #ff0000;
+    }
+
+    .presets-row {
+      display: flex;
+      gap: 4px;
+      justify-content: space-between;
+    }
+
+    .preset-btn-small {
+      flex: 1;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 8px;
+      padding: 8px 2px;
+      border: 2px solid var(--border-color);
+      background: var(--panel-color);
+      color: var(--text-color);
+      cursor: pointer;
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+      text-align: center;
+    }
+
+    .preset-btn-small:hover {
+      background: var(--slider-thumb);
+      color: var(--bg-color);
+    }
+
+    .preset-btn-small:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .disclaimer {
+      font-size: 7px;
+      color: #ff5555;
+      text-align: center;
+      line-height: 1.4;
+      border: 1px dashed #ff5555;
+      padding: 4px;
+      background: rgba(255, 85, 85, 0.1);
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 8px;
+      color: var(--text-color);
+      opacity: 0.7;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>TurnItUp</h1>
+  </div>
+
+  <div class="main-container">
+    <div class="controls-panel">
+      <div class="gain-section">
+        <div class="gain-label-container">
+          <div class="gain-label">MASTER GAIN</div>
+          <div class="slider-wrapper">
+            <input type="range" id="gainSlider" min="1" max="5" step="0.1" value="1">
+          </div>
+        </div>
+        <div class="gain-display-box">
+          <div class="gain-display" id="gainDisplay">100%</div>
+        </div>
+      </div>
+
+      <div class="presets-row">
+        <button class="preset-btn-small" data-gain="1">100%</button>
+        <button class="preset-btn-small" data-gain="2">200%</button>
+        <button class="preset-btn-small" data-gain="3">300%</button>
+        <button class="preset-btn-small" data-gain="4">400%</button>
+        <button class="preset-btn-small" data-gain="5">500%</button>
+      </div>
+
+      <div class="button-row">
+        <button class="retro-btn mute-btn" id="muteBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+          </svg>
+          <span>MUTE</span>
+        </button>
+        <button class="retro-btn reset-btn" id="resetBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+          </svg>
+          <span>RESET</span>
+        </button>
+      </div>
+
+      <div class="disclaimer">
+        WARNING: HIGH GAIN MAY CAUSE AUDIO CLIPPING OR DISTORTION
+      </div>
+    </div>
+
+    <div class="meter-container" id="meter">
+      <!-- Meter segments will be added/updated via JS -->
+    </div>
+  </div>
+
+  <div class="status" id="status">READY</div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
